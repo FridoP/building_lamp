@@ -1,0 +1,329 @@
+Dokumentasi pembuatan 10 lampu dengan 2 sensor :
+---------------------------------------------------------------------------------------------
+
+1.	Cek Java : "java - version" akan menampilkan versi java anda.
+
+2.	Kalau belum terinstal java, instal lah terlebih dahulu.
+
+3.	Add the openHAB Bintray Repositories key to the apt-keyring
+	using wget :
+		wget -qO - 'https://bintray.com/user/downloadSubjectPublicKey?username=openhab' | sudo apt-key add -
+	or using curl:
+		curl 'https://bintray.com/user/downloadSubjectPublicKey?username=openhab' | sudo apt-key add -
+
+4.	Add openHAB apt repository to the apt sources list (Note: the current openhab.list file will be overwritten) :
+		echo "deb http://dl.bintray.com/openhab/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/openhab.list
+
+5.	Resynchronize the package index
+		sudo apt-get update
+
+6.	Install the openHAB runtime
+		sudo apt-get install openhab-runtime
+	install the openHAB demo setup		//sumber : http://www.openhab.org/getting-started/downloads.html
+	install the openHAB addons			//sumber : http://www.openhab.org/getting-started/downloads.html
+
+7.	extract distribution-1.7.1-demo.zip dan distribution -1.7.1-addons.zip dengan perintah :
+		tar -zxvf distribution-1.7.1-demo.zip	atau unzip distribution-1.7.1-demo.zip
+		tar -zxvf distribution -1.7.1-addons.zip	atau unzip distribution -1.7.1-addons.zip
+	extrak file tersebut didalam folder openhab.
+
+8.	buka folder openhab	:	cd /etc/openhab/configurations
+
+9.	membuat file openhab.cfg : mkdir openhab.cfg
+
+10.	ketik perintah : ls -l , akan muncul semua isi file dan folder dari folder configurations :
+	total 176
+	drwxr-xr-x 2 pi pi  4096 Oct 13 02:14 items
+	-rw-r--r-- 1 pi pi  2311 May 25 21:28 logback.xml
+	-rw-r--r-- 1 pi pi  2525 May 25 21:28 logback_debug.xml
+	-rw-r--r-- 1 pi pi 69732 Aug 10 04:44 openhab.cfg
+	-rw-r--r-- 1 pi pi 69275 May 25 21:28 openhab_default.cfg
+	drwxr-xr-x 2 pi pi  4096 Aug 10 09:27 persistence
+	drwxr-xr-x 2 pi pi  4096 Sep 30 08:55 rules
+	drwxr-xr-x 2 pi pi  4096 Sep 30 08:56 scripts
+	drwxr-xr-x 2 pi pi  4096 Aug 10 09:27 sitemaps
+	drwxr-xr-x 2 pi pi  4096 Aug  2 23:31 transform
+	-rw-r--r-- 1 pi pi    24 May 25 21:28 users.cfg
+
+11.	Copy isi file openhab_default.cfg ke dalam file openhab.cfg :
+		cp openhab_default.cfg openhab.cfg
+
+12. buka file openhab.cfg : vi openhab.cfg
+	rubah isi file :
+		# configures the security options. The following values are valid:
+		# ON = security is switched on generally
+		# OFF = security is switched off generally
+		# EXTERNAL = security is switched on for external requests 
+		#            (e.g. originating from the Internet) only
+		# (optional, defaults to 'OFF')
+		#security:option=	//rubah menjadi	: security:option=ON	tanpa tanda pagar.
+
+13.	buka folder items, dan edit file demo.items :
+		vi items/demo.items		//akan keluar tampilan, dan rubahlah menjadi :
+
+		Group all
+
+		//item dengan 10 lampu, dan 2 buah sensor
+
+		Switch Lamp_1 				"Lampu 1" 	(all)	
+		Switch Lamp_2 				"Lampu 2" 	(all)	
+		Switch Lamp_3 				"Lampu 3"		(all)	
+		Switch Lamp_4				"Lampu 4"		(all)
+		Switch Lamp_5				"Lampu 5"		(all)
+		Switch Lamp_6				"Lampu 6"		(all)
+		Switch Lamp_7				"Lampu 7"		(all)
+		Switch Lamp_8				"Lampu 8"		(all)
+		Switch Lamp_9				"Lampu 9"		(all)
+		Switch Lamp_10				"Lampu 10"	(all)
+		Number Daya_listrik 			"Power [%.1f W]"					<energy>		(all)	
+		Number Water_flow			"Water_flow [%.1f L/min]" 		<water> 		(all) 	
+		String Serial_buff				"Serial"		{serial="/dev/ttyAMA0@9600"}
+
+14.	buka folder rules, dan edit file demmo.rules :
+		vi rules/demo.rules 		//akan keluar tampilan, dan rubahlah menjadi :
+
+		import org.openhab.core.library.types.*
+		import org.openhab.core.persistence.*
+		import org.openhab.model.script.actions.*
+		import org.eclipse.xtext.xbase.lib.*
+		import org.openhab.core.items.*
+		
+		rule "Start_up"
+			when 
+				System started
+			then
+				postUpdate(Daya_listrik, 0)
+				postUpdate(Water_flow, 0)
+			end
+		
+		rule "Flowmeter"
+			when
+				Time	cron "*/5 * * * * ?"
+			then
+				//sendCommand (Serial_buff, "700402")
+			end
+			
+		rule "Lamp_1"
+			when
+				Item Lamp_1 received update
+			then
+				if(Lamp_1.state==ON){
+					sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu01_Status=ON")
+					//sendCommand (Serial_buff, "610101FF")
+				}
+				else {
+				if(Lamp_1.state==OFF){
+					sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu01_Status=OFF")
+					//sendCommand (Serial_buff, "61010100")
+					}
+				}
+			end
+		
+		rule "Lamp_2"
+			when
+				Item Lamp_2 received update
+			then
+				if(Lamp_2.state==ON){
+					sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu02_Status=ON")
+					//sendCommand (Serial_buff, "610201FF")
+				}
+				else {
+				if(Lamp_2.state==OFF){
+					sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu02_Status=OFF")
+					//sendCommand (Serial_buff, "61020100")
+					}
+				}
+			end	
+			
+		rule "Lamp_3"
+			when
+				Item Lamp_3 received update
+			then
+				if(Lamp_3.state==ON){
+					sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu03_Status=ON")
+					//sendCommand (Serial_buff, "610301FF")
+				}
+				else {
+				if(Lamp_3.state==OFF){
+					sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu03_Status=OFF")
+					//sendCommand (Serial_buff, "61030100")
+					}
+				}
+			end
+
+		rule "Lamp_4"
+			when
+				Item Lamp_4 received update
+			then
+				if(Lamp_4.state==ON){
+					sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu04_Status=ON")
+					//sendCommand (Serial_buff, "610401FF")
+				}
+				else {
+				if(Lamp_4.state==OFF){
+					sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu04_Status=OFF")
+					//sendCommand (Serial_buff, "61040100")
+					}
+				}
+			end
+		
+		rule "Lamp_5"
+			when
+				Item Lamp_5 received update
+			then
+				if(Lamp_5.state==ON){
+					sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu06_Status=ON")
+					//sendCommand (Serial_buff, "610501FF")
+				}
+				else {
+				if(Lamp_5.state==OFF){
+					sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu05_Status=OFF")
+					//sendCommand (Serial_buff, "61050100")
+					}
+				}
+			end
+		
+		rule "Lamp_6"
+			when
+				Item Lamp_6 received update
+			then
+				if(Lamp_6.state==ON){
+					sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu06_Status=ON")
+					//sendCommand (Serial_buff, "610601FF")
+				}
+				else {
+				if(Lamp_6.state==OFF){
+					sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu06_Status=OFF")
+					//sendCommand (Serial_buff, "61060100")
+					}
+				}
+			end
+		
+		rule "Lamp_7"
+			when
+				Item Lamp_7 received update
+			then
+				if(Lamp_7.state==ON){
+					sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu07_Status=ON")
+					//sendCommand (Serial_buff, "610701FF")
+				}
+				else {
+				if(Lamp_7.state==OFF){
+					sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu07_Status=OFF")
+					//sendCommand (Serial_buff, "61070100")
+					}
+				}
+			end
+		
+		rule "Lamp_8"
+			when
+				Item Lamp_8 received update
+			then
+				if(Lamp_8.state==ON){
+					sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu08_Status=ON")
+					//sendCommand (Serial_buff, "610801FF")
+				}
+				else {
+				if(Lamp_8.state==OFF){
+					sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu08_Status=OFF")
+					//sendCommand (Serial_buff, "61080100")
+					}
+				}
+			end
+		
+		rule "Lamp_9"
+			when
+				Item Lamp_9 received update
+			then
+				if(Lamp_9.state==ON){
+					sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu09_Status=ON")
+					//sendCommand (Serial_buffs, "610901FF")
+				}
+				else {
+				if(Lamp_9.state==OFF){
+					sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu09_Status=OFF")
+					//sendCommand (Serial_buff, "61090100")
+					}
+				}
+			end
+		
+		rule "Lamp_10"
+			when
+				Item Lamp_10 received update
+			then
+				if(Lamp_10.state==ON){
+					sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu10_Status=ON")
+					//sendCommand (Serial_buff, "611001FF")
+				}
+				else {
+				if(Lamp_10.state=OFF"){
+					sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu10_Status=OFF")
+					//sendCommand (Serial_buff, "61100100")
+					}
+				}
+			end
+			
+		rule "Sensor"
+			when
+				Item Serial_buff received update
+			then
+			var String str = Serial_buff.state.toString
+			var String value = str.substring (2,6)
+			var String node = str.substring (0,2)
+			var Float value_f =Float::parseFloat(value)
+			if ( node == "02" )
+			{postUpdate (Water_flow,value_f)}
+			if ( node == "03" )
+			{postUpdate (Daya_listrik,value_f)}
+		end
+			
+15.	buka folder sitemaps, dan edit file demmo.sitemap :
+		vi sitemaps/demo.sitemap 		//akan keluar tampilan, dan rubahlah menjadi :	
+
+		sitemap demo label="Name Hotel"
+		{
+		        Frame
+		        {Group item=all label="Control" icon="groundfloor"}
+		}
+
+16.	Start openHAB
+		sudo systemctl start openhab	: untuk memulai /menjalankan openhab.
+		sudo systemctl status openhab	: untuk mengecek status openhab, aktif atau tidak aktif.
+		sudo systemctl stop openhab	: untuk mematikan openhab yang sedang berjalan.
+	atau gunakan command ini :
+		sudo /etc/init.d/openhab start
+		sudo /etc/init.d/openhab status
+		sudo /etc/init.d/openhab stop
+
+17.	Test it
+	Point your browser to http://localhost:8080/openhab.app?sitemap=demo
+	you should see your sitemap.
+
+//sumber : https://github.com/openhab/openhab/wiki/Linux---OS-X
+//sumber : https://github.com/openhab/openhab/wiki/Configuring-the-openHAB-runtime
+
+18.	cara mengetes
+	buka web browser, ketik pada address bar : http://localhost:8080/openhab.app?sitemap=demo
+	akan keluar tampilan web openhab yang berisi item-item lampu dan 2 sensor.
+	tes lah untuk lampu 1, tekan switch ke ON, kemudian OFF.
+
+19.	Hasil Test
+	maka pada command line akan terlihat seperti berikut :
+		Launching the openHAB runtime...
+		osgi> 2015-10-15 14:03:03.251 [INFO ] [.o.core.internal.CoreActivator] - openHAB runtime has been started (v1.7.1).
+		2015-10-15 14:03:05.670 [INFO ] [o.o.i.s.i.DiscoveryServiceImpl] - mDNS service has been started
+		2015-10-15 14:03:05.813 [INFO ] [o.o.i.s.i.DiscoveryServiceImpl] - Service Discovery initialization completed.
+		2015-10-15 14:03:10.917 [INFO ] [penhab.io.rest.RESTApplication] - Started REST API at /rest
+		2015-10-15 14:03:14.878 [INFO ] [c.internal.ModelRepositoryImpl] - Loading model 'demo.sitemap'
+		2015-10-15 14:03:15.242 [INFO ] [c.internal.ModelRepositoryImpl] - Loading model 'mqtt.persist'
+		2015-10-15 14:03:15.856 [INFO ] [c.internal.ModelRepositoryImpl] - Loading model 'demo.script'
+		2015-10-15 14:03:16.090 [INFO ] [c.internal.ModelRepositoryImpl] - Loading model 'demo.items'
+		2015-10-15 14:03:16.827 [INFO ] [.o.u.w.i.servlet.WebAppServlet] - Started Classic UI at /openhab.app
+		2015-10-15 14:03:21.097 [INFO ] [.service.AbstractActiveService] - NTP Refresh Service has been started
+		2015-10-15 14:03:21.329 [INFO ] [.service.AbstractActiveService] - HTTP Refresh Service has been started
+		2015-10-15 14:03:22.217 [INFO ] [runtime.busevents             ] - Lamp_1 received command ON
+		2015-10-15 14:03:26.265 [INFO ] [c.internal.ModelRepositoryImpl] - Loading model 'demo.rules'
+		2015-10-15 14:03:27.606 [INFO ] [runtime.busevents             ] - Daya_listrik state updated to 0
+		2015-10-15 14:03:27.656 [INFO ] [runtime.busevents             ] - Water_flow state updated to 0
+		2015-10-15 14:03:59.144 [INFO ] [runtime.busevents             ] - Lamp_1 received command ON
+		2015-10-15 14:04:01.516 [INFO ] [runtime.busevents             ] - Lamp_1 received command OFF

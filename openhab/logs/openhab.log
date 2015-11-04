@@ -1,0 +1,7 @@
+2015-10-16 14:27:18.141 [INFO ] [c.internal.ModelRepositoryImpl] - Refreshing model 'demo.sitemap'
+2015-10-16 14:27:18.155 [INFO ] [c.internal.ModelRepositoryImpl] - Refreshing model 'mqtt.persist'
+2015-10-16 14:27:18.167 [INFO ] [c.internal.ModelRepositoryImpl] - Refreshing model 'demo.rules'
+2015-10-16 14:27:18.265 [INFO ] [c.internal.ModelRepositoryImpl] - Refreshing model 'demo.script'
+2015-10-16 14:27:18.268 [INFO ] [c.internal.ModelRepositoryImpl] - Refreshing model 'demo.items'
+2015-10-16 14:36:33.523 [INFO ] [penhab.io.rest.RESTApplication] - Stopped REST API
+2015-10-16 14:36:39.341 [INFO ] [.o.u.w.i.servlet.WebAppServlet] - Stopped Classic UI

@@ -1,0 +1,7 @@
+sitemap demo label="Name Hotel"
+{
+	Frame 
+	{Group item=all label="Control" icon="groundfloor"}
+}
+	
+

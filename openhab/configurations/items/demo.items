@@ -1,0 +1,19 @@
+Group all
+
+
+//item dengan 10 lampu, dan 2 buah sensor
+
+Switch Lamp_1 				"Lampu 1" 	(all)	
+Switch Lamp_2 				"Lampu 2" 	(all)	
+Switch Lamp_3 				"Lampu 3"	(all)	
+Switch Lamp_4				"Lampu 4"	(all)
+Switch Lamp_5				"Lampu 5"	(all)
+Switch Lamp_6				"Lampu 6"	(all)
+Switch Lamp_7				"Lampu 7"	(all)
+Switch Lamp_8				"Lampu 8"	(all)
+Switch Lamp_9				"Lampu 9"	(all)
+Switch Lamp_10				"Lampu 10"	(all)
+Number Daya_listrik 			"Power [%.1f W]"			<energy>		(all)	
+Number Water_flow			"Water_flow [%.1f L/min]" 		<water> 		(all) 	
+String Serial_buff			"Serial"		{serial="/dev/ttyAMA0@9600"}
+

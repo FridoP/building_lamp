@@ -1,0 +1,195 @@
+import org.openhab.core.library.types.*
+import org.openhab.core.persistence.*
+import org.openhab.model.script.actions.*
+import org.eclipse.xtext.xbase.lib.*
+import org.openhab.core.items.*
+
+rule "Start_up"
+	when 
+		System started
+	then
+		postUpdate(Daya_listrik, 0)
+		postUpdate(Water_flow, 0)
+	end
+
+rule "Flowmeter"
+	when
+		Time	cron "*/5 * * * * ?"
+	then
+		//sendCommand (Serial_buff, "700402")
+	end
+	
+rule "Lamp_1"
+	when
+		Item Lamp_1 received update
+	then
+		if(Lamp_1.state==ON){
+			sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu01_Status=ON")
+			//sendCommand (Serial_buff, "610101FF")
+		}
+		else {
+		if(Lamp_1.state==OFF){
+			sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu01_Status=OFF")
+			//sendCommand (Serial_buff, "61010100")
+			}
+		}
+	end
+
+rule "Lamp_2"
+	when
+		Item Lamp_2 received update
+	then
+		if(Lamp_2.state==ON){
+			sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu02_Status=ON")
+			//sendCommand (Serial_buff, "610201FF")
+		}
+		else {
+		if(Lamp_2.state==OFF){
+			sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu02_Status=OFF")
+			//sendCommand (Serial_buff, "61020100")
+			}
+		}
+	end	
+	
+rule "Lamp_3"
+	when
+		Item Lamp_3 received update
+	then
+		if(Lamp_3.state==ON){
+			sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu03_Status=ON")
+			//sendCommand (Serial_buff, "610301FF")
+		}
+		else {
+		if(Lamp_3.state==OFF){
+			sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu03_Status=OFF")
+			//sendCommand (Serial_buff, "61030100")
+			}
+		}
+	end
+
+rule "Lamp_4"
+	when
+		Item Lamp_4 received update
+	then
+		if(Lamp_4.state==ON){
+			sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu04_Status=ON")
+			//sendCommand (Serial_buff, "610401FF")
+		}
+		else {
+		if(Lamp_4.state==OFF){
+			sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu04_Status=OFF")
+			//sendCommand (Serial_buff, "61040100")
+			}
+		}
+	end
+
+rule "Lamp_5"
+	when
+		Item Lamp_5 received update
+	then
+		if(Lamp_5.state==ON){
+			sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu06_Status=ON")
+			//sendCommand (Serial_buff, "610501FF")
+		}
+		else {
+		if(Lamp_5.state==OFF){
+			sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu05_Status=OFF")
+			//sendCommand (Serial_buff, "61050100")
+			}
+		}
+	end
+
+rule "Lamp_6"
+	when
+		Item Lamp_6 received update
+	then
+		if(Lamp_6.state==ON){
+			sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu06_Status=ON")
+			//sendCommand (Serial_buff, "610601FF")
+		}
+		else {
+		if(Lamp_6.state==OFF){
+			sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu06_Status=OFF")
+			//sendCommand (Serial_buff, "61060100")
+			}
+		}
+	end
+
+rule "Lamp_7"
+	when
+		Item Lamp_7 received update
+	then
+		if(Lamp_7.state==ON){
+			sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu07_Status=ON")
+			//sendCommand (Serial_buff, "610701FF")
+		}
+		else {
+		if(Lamp_7.state==OFF){
+			sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu07_Status=OFF")
+			//sendCommand (Serial_buff, "61070100")
+			}
+		}
+	end
+
+rule "Lamp_8"
+	when
+		Item Lamp_8 received update
+	then
+		if(Lamp_8.state==ON){
+			sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu08_Status=ON")
+			//sendCommand (Serial_buff, "610801FF")
+		}
+		else {
+		if(Lamp_8.state==OFF){
+			sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu08_Status=OFF")
+			//sendCommand (Serial_buff, "61080100")
+			}
+		}
+	end
+
+rule "Lamp_9"
+	when
+		Item Lamp_9 received update
+	then
+		if(Lamp_9.state==ON){
+			sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu09_Status=ON")
+			//sendCommand (Serial_buffs, "610901FF")
+		}
+		else {
+		if(Lamp_9.state==OFF){
+			sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu09_Status=OFF")
+			//sendCommand (Serial_buff, "61090100")
+			}
+		}
+	end
+
+rule "Lamp_10"
+	when
+		Item Lamp_10 received update
+	then
+		if(Lamp_10.state==ON){
+			sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu10_Status=ON")
+			//sendCommand (Serial_buff, "611001FF")
+		}
+		else {
+		if(Lamp_10.state=OFF"){
+			sendHttpGetRequest ("https://dweet.io/dweet/for/rdlab-thing-000001?Lampu10_Status=OFF")
+			//sendCommand (Serial_buff, "61100100")
+			}
+		}
+	end
+	
+rule "Sensor"
+	when
+		Item Serial_buff received update
+	then
+	var String str = Serial_buff.state.toString
+	var String value = str.substring (2,6)
+	var String node = str.substring (0,2)
+	var Float value_f =Float::parseFloat(value)
+	if ( node == "02" )
+	{postUpdate (Water_flow,value_f)}
+	if ( node == "03" )
+	{postUpdate (Daya_listrik,value_f)}
+end
+	
